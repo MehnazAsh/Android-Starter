@@ -238,19 +238,29 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
                     fos.write(outputFile.getAbsolutePath().getBytes());
                     setImage(outputFile);
                     imageMetaData = metaData;
-                    Toast.makeText(getApplication(), "downloadFileFromNetwork: onSuccess", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication(), "downloadFile: onSuccess", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
             @Override
             public void onFailure(Throwable throwable) {
-                Toast.makeText(getApplication(), "downloadFileFromNetwork: onFailure", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), "downloadFile: onFailure", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void progressChanged(MediaHttpDownloader mediaHttpDownloader) throws IOException {
+                Log.d("downloadFile: ", "progressChanged");
+            }
 
+            @Override
+            public void onCancelled() {
+                Toast.makeText(getApplication(), "downloadFile: onCancelled", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return false;
             }
         }, new KinveyCachedClientCallback<FileMetaData>() {
             @Override
@@ -291,7 +301,18 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
 
                 @Override
                 public void progressChanged(MediaHttpUploader mediaHttpUploader) throws IOException {
+                    Log.d("uploadFileToNetwork: ", "progressChanged");
+                }
 
+                @Override
+                public void onCancelled() {
+                    pd.dismiss();
+                    Toast.makeText(getApplication(), "uploadFileToNetwork: onCancelled", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public boolean isCancelled() {
+                    return false;
                 }
             });
         } catch (IOException e) {

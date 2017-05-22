@@ -18,7 +18,6 @@ public class BooksAdapter extends BaseAdapter {
     private final Context context;
 
     public BooksAdapter(List<Book> books, Context context){
-
         this.books = books;
         this.context = context;
     }
@@ -43,7 +42,6 @@ public class BooksAdapter extends BaseAdapter {
         if (convertView == null){
             convertView = LayoutInflater.from(context).inflate(R.layout.book_item, parent, false);
         }
-
         TextView tv = (TextView) convertView;
         Book book = books.get(position);
         tv.setText(book.getName());

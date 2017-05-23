@@ -280,14 +280,16 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
     }
 
     private void dismissProgress() {
-        progressDialog.dismiss();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Book book = adapter.getItem(position);
         Intent i = new Intent(this, BookActivity.class);
-        i.putExtra(Constants.ID, book.get(Constants._ID).toString());
+        i.putExtra(Constants.EXTRA_ID, book.get(Constants.ID).toString());
         startActivity(i);
     }
 }

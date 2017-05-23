@@ -7,7 +7,7 @@
     <string name="action_push">Push</string>
     <string name="action_pull">Pull</string>
     <string name="action_purge">Purge</string>
-    <string name="action_delete">delete</string>
+    <string name="action_delete">Delete</string>
 
     <!--Toast-->
     <string name="toast_empty_name">Name could not be empty</string>

@@ -9,9 +9,15 @@ public final class Constants {
     public static final String USER_NAME = "test";
     public static final String USER_PASSWORD = "test";
     public static final String IMAGE_DIRECTORY = "/Kinvey";
+    public static final String TYPE_IMAGE = "image/*";
+    public static final String IMAGE_EXTENSION = ".jpg";
 
-    public static final String ID = "id";
-    public static final String _ID = "_id";
+    public static final String EXTRA_ID = "id";
+
+    /**
+     * Books
+     */
+    public static final String ID = "_id";
     public static final String NAME = "name";
     public static final String IMAGE_ID = "image_id";
     public static final String COLLECTION_NAME = "Book";

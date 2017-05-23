@@ -77,7 +77,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
         imagePath = (EditText) findViewById(R.id.selected_image_editText);
         imagePath.setEnabled(false);
 
-        findViewById(R.id.save2).setOnClickListener(this);
+        findViewById(R.id.save).setOnClickListener(this);
         findViewById(R.id.upload_to_internet).setOnClickListener(this);
         findViewById(R.id.remove).setOnClickListener(this);
         findViewById(R.id.select_image_btn).setOnClickListener(this);
@@ -95,7 +95,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (book.containsKey(Constants._ID)) {
+        if (book.containsKey(Constants.ID)) {
             getMenuInflater().inflate(R.menu.menu_book, menu);
             return true;
         } else {
@@ -106,7 +106,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        String id = getIntent().getStringExtra(Constants.ID);
+        String id = getIntent().getStringExtra(Constants.EXTRA_ID);
         findBook(id);
     }
 
@@ -119,7 +119,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.save2:
+            case R.id.save:
                 save();
                 break;
             case R.id.upload_to_internet:
@@ -218,7 +218,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
 
     private void selectImage() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
+        photoPickerIntent.setType(Constants.TYPE_IMAGE);
         startActivityForResult(photoPickerIntent, SELECT_PHOTO);
     }
 
@@ -231,7 +231,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
         if (!outputDirectory.exists()){
             outputDirectory.mkdirs();
         }
-        final File outputFile = new File(Environment.getExternalStorageDirectory() + Constants.IMAGE_DIRECTORY + "/" + imageId +".jpg");
+        final File outputFile = new File(Environment.getExternalStorageDirectory() + Constants.IMAGE_DIRECTORY + "/" + imageId + Constants.IMAGE_EXTENSION);
         if (!outputFile.exists()){
             outputFile.createNewFile();
         }
@@ -305,7 +305,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
 
     private void deleteBook() {
         showProgress(getResources().getString(R.string.progress_delete));
-        bookStore.delete(book.get(Constants._ID).toString(), new KinveyDeleteCallback() {
+        bookStore.delete(book.get(Constants.ID).toString(), new KinveyDeleteCallback() {
             @Override
             public void onSuccess(Integer integer) {
                 dismissProgress();

@@ -22,6 +22,8 @@
     <string name="toast_find_failed">Find failed</string>
     <string name="toast_upload_completed">Upload completed</string>
     <string name="toast_upload_failed">Upload failed</string>
+    <string name="toast_upload_canceled">Upload canceled</string>
+    <string name="toast_download_canceled">Download canceled</string>
     <string name="toast_delete_completed">Delete completed</string>
     <string name="toast_delete_failed">Delete failed</string>
     <string name="toast_sync_completed">Sync completed</string>

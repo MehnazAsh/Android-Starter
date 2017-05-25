@@ -258,7 +258,17 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void progressChanged(MediaHttpDownloader mediaHttpDownloader) throws IOException {
+                Log.d("downloadFile: ", "progressChanged");
+            }
 
+            @Override
+            public void onCancelled() {
+                Toast.makeText(getApplication(), R.string.toast_download_canceled, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return false;
             }
         }, new KinveyCachedClientCallback<FileMetaData>() {
             @Override
@@ -295,7 +305,18 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
 
                 @Override
                 public void progressChanged(MediaHttpUploader mediaHttpUploader) throws IOException {
+                    Log.d("uploadFileToNetwork: ", "progressChanged");
+                }
 
+                @Override
+                public void onCancelled() {
+                    dismissProgress();
+                    Toast.makeText(getApplication(), R.string.toast_upload_canceled, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public boolean isCancelled() {
+                    return false;
                 }
             });
         } catch (IOException e) {

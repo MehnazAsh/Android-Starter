@@ -9,7 +9,7 @@ import com.kinvey.android.Client;
  */
 public class App extends MultiDexApplication {
 
-    Client sharedClient;
+    private Client sharedClient;
 
     @Override
     public void onCreate() {

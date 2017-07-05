@@ -13,6 +13,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.kinvey.android.Client;
 import com.kinvey.android.callback.KinveyListCallback;
 import com.kinvey.android.callback.KinveyPurgeCallback;
@@ -30,6 +36,7 @@ import com.kinvey.java.store.StoreType;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ShelfActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -40,6 +47,7 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
     private BooksAdapter adapter;
     private DataStore<Book> bookStore;
     private ProgressDialog progressDialog;
+    private CallbackManager mCallbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,29 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
         setSupportActionBar(toolbar);
         client = ((App) getApplication()).getSharedClient();
         bookStore = DataStore.collection(Constants.COLLECTION_NAME, Book.class, StoreType.CACHE, client);
+
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
+        mCallbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(mCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        Log.d("Success", "Login");
+                        kinveyFacebookLogin(loginResult.getAccessToken().getToken());
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(ShelfActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        Toast.makeText(ShelfActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
     }
 
     @Override
@@ -59,6 +90,12 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -142,36 +179,7 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
     }
 
     private void checkLogin() throws IOException {
-        if (!client.isUserLoggedIn()) {
-            showProgress(getResources().getString(R.string.progress_login));
-            UserStore.login(Constants.USER_NAME, Constants.USER_PASSWORD, client, new KinveyClientCallback<User>() {
-                @Override
-                public void onSuccess(User result) {
-                    //successfully logged in
-                    dismissProgress();
-                    Toast.makeText(ShelfActivity.this, R.string.toast_sign_in_completed, Toast.LENGTH_LONG).show();
-                    sync();
-                }
-
-                @Override
-                public void onFailure(Throwable error) {
-                    UserStore.signUp(Constants.USER_NAME, Constants.USER_PASSWORD, client, new KinveyClientCallback<User>() {
-                        @Override
-                        public void onSuccess(User o) {
-                            getData();
-                            dismissProgress();
-                            Toast.makeText(ShelfActivity.this, R.string.toast_sign_up_completed, Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onFailure(Throwable error) {
-                            dismissProgress();
-                            Toast.makeText(ShelfActivity.this, R.string.toast_can_not_login, Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-            });
-        } else {
+        if (client.isUserLoggedIn()) {
             getData();
         }
     }
@@ -207,6 +215,15 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
                 break;
             case R.id.action_purge:
                 purge();
+                break;
+            case R.id.action_login:
+                login();
+                break;
+            case R.id.action_facebook_login:
+                facebookLogin();
+                break;
+            case R.id.action_logout:
+                logout();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -248,6 +265,95 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void onProgress(long current, long all) {
 
+            }
+        });
+    }
+
+    private void login(){
+        showProgress(getResources().getString(R.string.progress_login));
+        try {
+            UserStore.login(Constants.USER_NAME, Constants.USER_PASSWORD, client, new KinveyClientCallback<User>() {
+                @Override
+                public void onSuccess(User result) {
+                    //successfully logged in
+                    dismissProgress();
+                    Toast.makeText(ShelfActivity.this, R.string.toast_sign_in_completed, Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(Throwable error) {
+                    dismissProgress();
+                    Toast.makeText(ShelfActivity.this, R.string.toast_can_not_login, Toast.LENGTH_LONG).show();
+                    signUp();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            dismissProgress();
+            Toast.makeText(ShelfActivity.this, R.string.toast_unsuccessful, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void facebookLogin() {
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends"));
+    }
+
+    private void kinveyFacebookLogin(String accessToken){
+        showProgress(getResources().getString(R.string.progress_login));
+        try {
+            UserStore.loginFacebook(accessToken, client, new KinveyClientCallback<User>() {
+                @Override
+                public void onSuccess(User result) {
+                    //successfully logged in
+                    dismissProgress();
+                    Toast.makeText(ShelfActivity.this, R.string.toast_sign_in_completed, Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(Throwable error) {
+                    dismissProgress();
+                    Toast.makeText(ShelfActivity.this, R.string.toast_can_not_login, Toast.LENGTH_LONG).show();
+                    signUp();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            dismissProgress();
+            Toast.makeText(ShelfActivity.this, R.string.toast_unsuccessful, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void signUp() {
+        showProgress(getResources().getString(R.string.progress_sign_up));
+        UserStore.signUp(Constants.USER_NAME, Constants.USER_PASSWORD, client, new KinveyClientCallback<User>() {
+            @Override
+            public void onSuccess(User o) {
+                getData();
+                dismissProgress();
+                Toast.makeText(ShelfActivity.this, R.string.toast_sign_up_completed, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                dismissProgress();
+                Toast.makeText(ShelfActivity.this, R.string.toast_can_not_sign_up, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void logout() {
+        showProgress(getResources().getString(R.string.progress_logout));
+        UserStore.logout(client, new KinveyClientCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                dismissProgress();
+                Toast.makeText(ShelfActivity.this, R.string.toast_logout_completed, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                dismissProgress();
+                Toast.makeText(ShelfActivity.this, R.string.toast_logout_failed, Toast.LENGTH_LONG).show();
             }
         });
     }

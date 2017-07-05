@@ -9,6 +9,7 @@
     <string name="action_purge">Purge</string>
     <string name="action_logout">Logout</string>
     <string name="action_login">Login</string>
+    <string name="action_facebook_login">Facebook login</string>
     <string name="action_delete">Delete</string>
 
     <!--Toast-->
@@ -52,5 +53,9 @@
     <string name="progress_pull">Pulling</string>
     <string name="progress_push">Pushing</string>
     <string name="progress_purge">Purging</string>
+
+    <!--Social-->
+    <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID_HERE</string>
+    <string name="fb_login_protocol_scheme">YOUR_FACEBOOK_LOGIN_PROTOCOL_SCHEME_HERE</string>
 
 </resources>

@@ -31,7 +31,7 @@ import com.kinvey.android.sync.KinveyPushResponse;
 import com.kinvey.android.sync.KinveySyncCallback;
 import com.kinvey.java.cache.KinveyCachedClientCallback;
 import com.kinvey.java.core.KinveyClientCallback;
-import com.kinvey.java.dto.User;
+import com.kinvey.android.model.User;
 import com.kinvey.java.store.StoreType;
 
 import java.io.IOException;

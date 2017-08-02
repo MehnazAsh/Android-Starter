@@ -38,6 +38,11 @@
         android:title="@string/action_facebook_login"
         app:showAsAction="never"/>
     <item
+        android:id="@+id/action_mic_login"
+        android:orderInCategory="100"
+        android:title="@string/action_mic_login"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/action_logout"
         android:orderInCategory="100"
         android:title="@string/action_logout"

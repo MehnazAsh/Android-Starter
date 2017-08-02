@@ -22,6 +22,7 @@ import com.facebook.login.LoginResult;
 import com.kinvey.android.Client;
 import com.kinvey.android.callback.KinveyListCallback;
 import com.kinvey.android.callback.KinveyPurgeCallback;
+import com.kinvey.android.callback.KinveyUserCallback;
 import com.kinvey.android.store.DataStore;
 import com.kinvey.android.store.UserStore;
 import com.kinvey.android.sync.KinveyPullCallback;
@@ -222,6 +223,9 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
             case R.id.action_facebook_login:
                 facebookLogin();
                 break;
+            case R.id.action_mic_login:
+                micLogin();
+                break;
             case R.id.action_logout:
                 logout();
                 break;
@@ -292,6 +296,20 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
             dismissProgress();
             Toast.makeText(ShelfActivity.this, R.string.toast_unsuccessful, Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void micLogin() {
+        UserStore.presentMICLoginActivity(client, null, "kinveyAuthDemo://", new KinveyUserCallback<User>() {
+            @Override
+            public void onSuccess(User user) {
+                Toast.makeText(ShelfActivity.this, R.string.toast_sign_in_completed, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                Toast.makeText(ShelfActivity.this, R.string.toast_can_not_login, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void facebookLogin() {

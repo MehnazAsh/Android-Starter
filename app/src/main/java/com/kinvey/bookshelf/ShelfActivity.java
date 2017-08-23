@@ -56,7 +56,7 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         client = ((App) getApplication()).getSharedClient();
-        bookStore = DataStore.collection(Constants.COLLECTION_NAME, Book.class, StoreType.CACHE, client);
+        bookStore = DataStore.collection(Constants.COLLECTION_NAME, Book.class, StoreType.SYNC, client);
 
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         mCallbackManager = CallbackManager.Factory.create();
@@ -82,15 +82,13 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
 
     }
 
-    @Override
+/*    @Override
     protected void onResume() {
         super.onResume();
-        try {
-            checkLogin();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (client != null && client.isUserLoggedIn()) {
+            sync();
         }
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -109,9 +107,9 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
         bookStore.sync(new KinveySyncCallback<Book>() {
             @Override
             public void onSuccess(KinveyPushResponse kinveyPushResponse, KinveyPullResponse<Book> kinveyPullResponse) {
+                updateBookAdapter(kinveyPullResponse.getResult());
                 dismissProgress();
                 Toast.makeText(ShelfActivity.this, R.string.toast_sync_completed, Toast.LENGTH_LONG).show();
-                getData();
             }
 
             @Override
@@ -142,7 +140,7 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
         });
     }
 
-    private void getData() {
+/*    private void getData() {
         bookStore.find(new KinveyListCallback<Book>() {
             @Override
             public void onSuccess(List<Book> books) {
@@ -166,7 +164,7 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
                 Log.d(TAG, "CachedClientCallback: failure");
             }
         });
-    }
+    }*/
 
     private void updateBookAdapter(List<Book> books) {
         if (books == null) {
@@ -176,12 +174,6 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
         list.setOnItemClickListener(ShelfActivity.this);
         adapter = new BooksAdapter(books, ShelfActivity.this);
         list.setAdapter(adapter);
-    }
-
-    private void checkLogin() throws IOException {
-        if (client.isUserLoggedIn()) {
-            getData();
-        }
     }
 
     @Override
@@ -231,11 +223,11 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private void pull() {
         showProgress(getResources().getString(R.string.progress_pull));
-        bookStore.pull(null, new KinveyPullCallback<Book>() {
+        bookStore.pull(new KinveyPullCallback<Book>() {
             @Override
             public void onSuccess(KinveyPullResponse kinveyPullResponse) {
                 dismissProgress();
-                getData();
+                updateBookAdapter(kinveyPullResponse.getResult());
                 Toast.makeText(ShelfActivity.this, R.string.toast_pull_completed, Toast.LENGTH_LONG).show();
             }
 
@@ -328,7 +320,6 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
         UserStore.signUp(Constants.USER_NAME, Constants.USER_PASSWORD, client, new KinveyClientCallback<User>() {
             @Override
             public void onSuccess(User o) {
-                getData();
                 dismissProgress();
                 Toast.makeText(ShelfActivity.this, R.string.toast_sign_up_completed, Toast.LENGTH_LONG).show();
             }
@@ -346,6 +337,7 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
         UserStore.logout(client, new KinveyClientCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                updateBookAdapter(new ArrayList<Book>());
                 dismissProgress();
                 Toast.makeText(ShelfActivity.this, R.string.toast_logout_completed, Toast.LENGTH_LONG).show();
             }
@@ -364,7 +356,6 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void onSuccess(Void result) {
                 dismissProgress();
-                getData();
                 Toast.makeText(ShelfActivity.this, R.string.toast_purge_completed, Toast.LENGTH_LONG).show();
             }
 

@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Prots on 3/15/16.
@@ -144,6 +145,11 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             showProgress(getResources().getString(R.string.progress_save));
             book.setName(name.getText().toString());
+            List<String> authors = new ArrayList<>();
+            authors.add("Ivanov");
+            authors.add("Petrov");
+            authors.add("Sidorov");
+            book.setAuthors(authors);
             bookStore.save(book,
                     new KinveyClientCallback<Book>() {
                         @Override

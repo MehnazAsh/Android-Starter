@@ -111,7 +111,7 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
             public void onSuccess(KinveyPushResponse kinveyPushResponse, KinveyPullResponse<Book> kinveyPullResponse) {
                 dismissProgress();
                 Toast.makeText(ShelfActivity.this, R.string.toast_sync_completed, Toast.LENGTH_LONG).show();
-                getData();
+                updateBookAdapter(kinveyPullResponse.getResult());
             }
 
             @Override
@@ -233,9 +233,9 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
         showProgress(getResources().getString(R.string.progress_pull));
         bookStore.pull(null, new KinveyPullCallback<Book>() {
             @Override
-            public void onSuccess(KinveyPullResponse kinveyPullResponse) {
+            public void onSuccess(KinveyPullResponse<Book> kinveyPullResponse) {
                 dismissProgress();
-                getData();
+                updateBookAdapter(kinveyPullResponse.getResult());
                 Toast.makeText(ShelfActivity.this, R.string.toast_pull_completed, Toast.LENGTH_LONG).show();
             }
 

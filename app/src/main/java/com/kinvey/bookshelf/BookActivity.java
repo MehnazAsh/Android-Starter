@@ -145,11 +145,11 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             showProgress(getResources().getString(R.string.progress_save));
             book.setName(name.getText().toString());
-            List<String> authors = new ArrayList<>();
-            authors.add("Ivanov");
-            authors.add("Petrov");
-            authors.add("Sidorov");
-            book.setAuthors(authors);
+            List<String> coAuthors = new ArrayList<>();
+            coAuthors.add("Ivanov");
+            coAuthors.add("Petrov");
+            coAuthors.add("Sidorov");
+            book.setCoAuthorsNames(coAuthors);
             bookStore.save(book,
                     new KinveyClientCallback<Book>() {
                         @Override

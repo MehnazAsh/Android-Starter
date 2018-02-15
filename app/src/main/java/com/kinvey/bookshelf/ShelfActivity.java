@@ -32,6 +32,7 @@ import com.kinvey.android.sync.KinveySyncCallback;
 import com.kinvey.java.cache.KinveyCachedClientCallback;
 import com.kinvey.java.core.KinveyClientCallback;
 import com.kinvey.android.model.User;
+import com.kinvey.java.store.BaseUserStore;
 import com.kinvey.java.store.StoreType;
 
 import java.io.IOException;
@@ -82,13 +83,13 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
 
     }
 
-/*    @Override
+    @Override
     protected void onResume() {
         super.onResume();
         if (client != null && client.isUserLoggedIn()) {
-            sync();
+            getData();
         }
-    }*/
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -140,7 +141,7 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
         });
     }
 
-/*    private void getData() {
+    private void getData() {
         bookStore.find(new KinveyListCallback<Book>() {
             @Override
             public void onSuccess(List<Book> books) {
@@ -152,7 +153,7 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
             public void onFailure(Throwable error) {
                 Log.d(TAG, "ListCallback: failure");
             }
-        }, new KinveyCachedClientCallback<List<Book>>() {
+        }/*, new KinveyCachedClientCallback<List<Book>>() {
             @Override
             public void onSuccess(final List<Book> books) {
                 Log.d(TAG, "CachedClientCallback: success");
@@ -163,8 +164,8 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
             public void onFailure(Throwable throwable) {
                 Log.d(TAG, "CachedClientCallback: failure");
             }
-        });
-    }*/
+        }*/);
+    }
 
     private void updateBookAdapter(List<Book> books) {
         if (books == null) {

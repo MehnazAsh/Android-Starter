@@ -3,6 +3,7 @@ package com.kinvey.bookshelf;
 import com.google.api.client.json.GenericJson;
 import com.google.api.client.util.Key;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,9 +16,6 @@ public class Book extends GenericJson {
 
     @Key(Constants.IMAGE_ID)
     private String imageId;
-
-    @Key(Constants.AUTHORS)
-    private List<String> authors;
 
     public Book(){};
 
@@ -41,11 +39,14 @@ public class Book extends GenericJson {
         this.imageId = imageId;
     }
 
-    public List<String> getAuthors() {
-        return authors;
+    @Key(Constants.CO_AUTHORS_NAMES)
+    private List<String> coAuthorsNames;
+
+    public List<String> getCoAuthorsNames() {
+        return coAuthorsNames;
     }
 
-    public void setAuthors(List<String> authors) {
-        this.authors = authors;
+    public void setCoAuthorsNames(List<String> coAuthorsNames) {
+        this.coAuthorsNames = coAuthorsNames;
     }
 }

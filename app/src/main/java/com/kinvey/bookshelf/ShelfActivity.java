@@ -29,10 +29,8 @@ import com.kinvey.android.sync.KinveyPullResponse;
 import com.kinvey.android.sync.KinveyPushCallback;
 import com.kinvey.android.sync.KinveyPushResponse;
 import com.kinvey.android.sync.KinveySyncCallback;
-import com.kinvey.java.cache.KinveyCachedClientCallback;
 import com.kinvey.java.core.KinveyClientCallback;
 import com.kinvey.android.model.User;
-import com.kinvey.java.store.BaseUserStore;
 import com.kinvey.java.store.StoreType;
 
 import java.io.IOException;
@@ -153,18 +151,7 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
             public void onFailure(Throwable error) {
                 Log.d(TAG, "ListCallback: failure");
             }
-        }/*, new KinveyCachedClientCallback<List<Book>>() {
-            @Override
-            public void onSuccess(final List<Book> books) {
-                Log.d(TAG, "CachedClientCallback: success");
-                updateBookAdapter(books);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                Log.d(TAG, "CachedClientCallback: failure");
-            }
-        }*/);
+        });
     }
 
     private void updateBookAdapter(List<Book> books) {

@@ -17,7 +17,10 @@ public class Book extends GenericJson {
     @Key(Constants.IMAGE_ID)
     private String imageId;
 
-    public Book(){};
+    @Key
+    private Author author;
+
+    public Book(){}
 
     public Book(String name){
         this.name = name;
@@ -48,5 +51,13 @@ public class Book extends GenericJson {
 
     public void setCoAuthorsNames(List<String> coAuthorsNames) {
         this.coAuthorsNames = coAuthorsNames;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 }

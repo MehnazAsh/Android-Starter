@@ -150,6 +150,7 @@ public class BookActivity extends AppCompatActivity implements View.OnClickListe
             coAuthors.add("Petrov");
             coAuthors.add("Sidorov");
             book.setCoAuthorsNames(coAuthors);
+            book.setAuthor(new Author("Tolstoy"));
             bookStore.save(book,
                     new KinveyClientCallback<Book>() {
                         @Override

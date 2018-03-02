@@ -326,6 +326,7 @@ public class ShelfActivity extends AppCompatActivity implements AdapterView.OnIt
             @Override
             public void onSuccess(Void aVoid) {
                 updateBookAdapter(new ArrayList<Book>());
+                bookStore = DataStore.collection(Constants.COLLECTION_NAME, Book.class, StoreType.SYNC, client);
                 dismissProgress();
                 Toast.makeText(ShelfActivity.this, R.string.toast_logout_completed, Toast.LENGTH_LONG).show();
             }
